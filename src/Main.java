@@ -18,9 +18,9 @@ public class Main {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new GridLayout(1, 3));
 
-        frame.add(createPetButton("Dog", "dog_normal.jpg"));
-        frame.add(createPetButton("Cat", "cat_normal.jpg"));
-        frame.add(createPetButton("Bird", "bird_normal.jpg"));
+        frame.add(createPetButton("Dog", "dog_normal.png"));
+        frame.add(createPetButton("Cat", "cat_normal.png"));
+        frame.add(createPetButton("Bird", "bird_normal.png"));
 
         frame.setVisible(true);
     }

@@ -1,7 +1,5 @@
 // VirtualPet.java with image changes for 3 pets: dog, cat, bird
 
-// VirtualPet.java with Cleanliness attribute added
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -108,7 +106,7 @@ public class VirtualPet extends JFrame {
         hunger = Math.max(hunger - 15, 0);
         tiredness = Math.min(tiredness + 5, 100);
         cleanliness = Math.max(cleanliness - 10, 0);
-        setPetImageTemporarily(petType + "_eating.jpg");
+        setPetImageTemporarily(petType + "_eating.png");
         updateLabels();
     }
 
@@ -118,14 +116,14 @@ public class VirtualPet extends JFrame {
         tiredness = Math.min(tiredness + 10, 100);
         hunger = Math.min(hunger + 5, 100);
         cleanliness = Math.max(cleanliness - 5, 0);
-        setPetImageTemporarily(petType + "_happy.jpg");
+        setPetImageTemporarily(petType + "_happy.png");
         updateLabels();
     }
 
     private void restPet() {
         tiredness = Math.max(tiredness - 30, 0);
         boredom = Math.min(boredom + 5, 100);
-        setPetImageTemporarily(petType + "_sleeping.jpg");
+        setPetImageTemporarily(petType + "_sleeping.png");
         updateLabels();
     }
 
@@ -174,7 +172,7 @@ public class VirtualPet extends JFrame {
 
     private void setPetImageTemporarily(String imageFileName) {
         setPetImage(imageFileName);
-        new Timer(3000, e -> setPetImage(petType + "_normal.jpg")).start();
+        new Timer(3000, e -> setPetImage(petType + "_normal.png")).start();
     }
 
     private void savePet() {
