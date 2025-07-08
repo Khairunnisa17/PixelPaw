@@ -43,17 +43,24 @@ public class VirtualPet extends JFrame {
         else petType = "pet";
 
         setTitle("Your Pet: " + name);
-        setSize(600, 700);
+        setSize(500, 550);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         setupMenuBar();
 
+        //position - pet
         ImageIcon petIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/" + imageFile)));
         petImageLabel = new JLabel(petIcon);
         petImageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(petImageLabel, BorderLayout.NORTH);
 
+        //panel - pet name
+        Font fontName = new Font("Arial", Font.BOLD, 20);
+        JPanel namePanel = new JPanel();
+        namePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+        //panel - pet status
         JPanel statusPanel = new JPanel();
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.Y_AXIS));
         statusPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
