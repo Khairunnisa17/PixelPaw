@@ -49,23 +49,29 @@ public class VirtualPet extends JFrame {
 
         setupMenuBar();
 
-        //position - pet
+        //pet image + pet name
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+
+        //position - pet image
         ImageIcon petIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/" + imageFile)));
         petImageLabel = new JLabel(petIcon);
-        petImageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        add(petImageLabel, BorderLayout.NORTH);
+        petImageLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // center image
+        topPanel.add(petImageLabel);
 
         //font styles
         Font fontName = new Font("Arial", Font.BOLD, 20);
         Font font = new Font("Arial", Font.PLAIN, 16);
 
         //panel - display pet's name
-        JLabel nameLabel = new JLabel("Name: " + petName);
         JPanel namePanel = new JPanel();
+        JLabel nameLabel = new JLabel("Name: " + petName);
 
         nameLabel.setFont(fontName);
-        namePanel.add(nameLabel);
-        namePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // center name
+        topPanel.add(Box.createVerticalStrut(5)); // spacing
+        topPanel.add(nameLabel);
+        add(topPanel, BorderLayout.NORTH);
 
         //panel - pet status
         JPanel statusPanel = new JPanel();
