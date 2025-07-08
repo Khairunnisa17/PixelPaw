@@ -1,5 +1,6 @@
 /* VirtualPet.java with image changes for 3 pets: dog, cat, bird */
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -117,6 +118,7 @@ public class VirtualPet extends JFrame {
         tiredness = Math.min(tiredness + 5, 100);
         cleanliness = Math.max(cleanliness - 10, 0);
         setPetImageTemporarily(petType + "_eating.png");
+        playPetSound();
         updateLabels();
     }
 
@@ -127,6 +129,7 @@ public class VirtualPet extends JFrame {
         hunger = Math.min(hunger + 5, 100);
         cleanliness = Math.max(cleanliness - 5, 0);
         setPetImageTemporarily(petType + "_happy.png");
+        playPetSound();
         updateLabels();
     }
 
@@ -134,11 +137,13 @@ public class VirtualPet extends JFrame {
         tiredness = Math.max(tiredness - 30, 0);
         boredom = Math.min(boredom + 5, 100);
         setPetImageTemporarily(petType + "_sleeping.png");
+        playPetSound();
         updateLabels();
     }
 
     private void cleanPet() {
         cleanliness = Math.min(cleanliness + 30, 100);
+        playPetSound();
         JOptionPane.showMessageDialog(this, petName + " feels clean now!");
         updateLabels();
     }
@@ -176,7 +181,6 @@ public class VirtualPet extends JFrame {
         return "(・_・) Okay";
     }
 
-
     private void setPetImage(String imageFileName) {
         ImageIcon newIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/" + imageFileName)));
         petImageLabel.setIcon(newIcon);
@@ -188,7 +192,7 @@ public class VirtualPet extends JFrame {
     }
 
     private void savePet() {
-        File file = new File("pet_save.txt"); // fixed file name
+        File file = new File("pet_save.txt");
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
             writer.println("Pet Name: " + petName);
@@ -203,12 +207,11 @@ public class VirtualPet extends JFrame {
         }
     }
 
-
     private void loadPet() {
-        File file = new File("pet_save.txt"); // fixed file name
+        File file = new File("pet_save.txt");
 
         if (!file.exists()) {
-            JOptionPane.showMessageDialog(this, "No saved pet found (pet_save.txt not found).");
+            JOptionPane.showMessageDialog(this, "No saved pet found (pet_save.txt not found)." );
             return;
         }
 
@@ -239,6 +242,35 @@ public class VirtualPet extends JFrame {
         if (newName != null && !newName.trim().isEmpty()) {
             petName = newName.trim();
             updateLabels();
+        }
+    }
+
+    private void playPetSound() {
+        String soundFileName = null;
+
+        switch (petType) {
+            case "dog":
+                soundFileName = "dog.wav";
+                break;
+            case "cat":
+                soundFileName = "cat.wav";
+                break;
+            case "bird":
+                soundFileName = "bird.wav";
+                break;
+            default:
+                return;
+        }
+
+        try {
+            File soundFile = new File(Objects.requireNonNull(getClass().getResource("/" + soundFileName)).getFile());
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+        } catch (Exception e) {
+            System.err.println("Failed to play sound: " + soundFileName);
+            e.printStackTrace();
         }
     }
 }
