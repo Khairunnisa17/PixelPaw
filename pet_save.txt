@@ -1,6 +1,6 @@
 Pet Name: 4
-Hunger: 55
-Health: 100
-Tiredness: 10
-Boredom: 25
-Cleanliness: 65
+Hunger: 60
+Health: 0
+Tiredness: 0
+Boredom: 0
+Cleanliness: 50
