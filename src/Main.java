@@ -6,10 +6,13 @@
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
+
+import static javax.swing.SwingUtilities.*;
 
 public class Main {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(Main::showPetSelection);
+        invokeLater(Main::showPetSelection);
     }
 
     public static void showPetSelection() {
@@ -28,7 +31,7 @@ public class Main {
     private static JButton createPetButton(String name, String imageFile) {
         ImageIcon icon = null;
         try {
-            icon = new ImageIcon(Main.class.getResource("/" + imageFile));
+            icon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/" + imageFile)));
         } catch (Exception e) {
             System.out.println("Image not found: " + imageFile);
         }
@@ -40,7 +43,7 @@ public class Main {
         button.addActionListener(e -> {
             String petName = JOptionPane.showInputDialog("Name your " + name + ":");
             if (petName != null && !petName.trim().isEmpty()) {
-                ((JFrame) SwingUtilities.getWindowAncestor(button)).dispose();
+                getWindowAncestor(button).dispose();
                 new VirtualPet(imageFile, petName.trim());
             }
         });

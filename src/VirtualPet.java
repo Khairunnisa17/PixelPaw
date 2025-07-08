@@ -1,15 +1,20 @@
-// VirtualPet.java with image changes for 3 pets: dog, cat, bird
+/* VirtualPet.java with image changes for 3 pets: dog, cat, bird */
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.*;
+import java.util.Objects;
 
 public class VirtualPet extends JFrame {
     private int hunger = 50, health = 100, tiredness = 30, boredom = 40, cleanliness = 70;
-    private JLabel hungerLabel, healthLabel, tiredLabel, boredomLabel, cleanlinessLabel, moodLabel;
-    private JLabel petImageLabel;
-    private String petImageFile;
+    private final JLabel hungerLabel;
+    private final JLabel healthLabel;
+    private final JLabel tiredLabel;
+    private final JLabel boredomLabel;
+    private final JLabel cleanlinessLabel;
+    private final JLabel moodLabel;
+    private final JLabel petImageLabel;
+    private final String petImageFile;
     private String petName;
     private String petType;
 
@@ -29,7 +34,7 @@ public class VirtualPet extends JFrame {
 
         setupMenuBar();
 
-        ImageIcon petIcon = new ImageIcon(getClass().getResource("/" + imageFile));
+        ImageIcon petIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/" + imageFile)));
         petImageLabel = new JLabel(petIcon);
         petImageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(petImageLabel, BorderLayout.NORTH);
@@ -53,6 +58,17 @@ public class VirtualPet extends JFrame {
 
         add(statusPanel, BorderLayout.WEST);
 
+        JPanel buttonPanel = getJPanel();
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        Timer timer = new Timer(60000, e -> updatePet());
+        timer.start();
+
+        updateLabels();
+        setVisible(true);
+    }
+
+    private JPanel getJPanel() {
         JPanel buttonPanel = new JPanel();
         JButton feedBtn = new JButton("Feed 🍖");
         JButton playBtn = new JButton("Play 🎾");
@@ -68,13 +84,7 @@ public class VirtualPet extends JFrame {
         buttonPanel.add(playBtn);
         buttonPanel.add(napBtn);
         buttonPanel.add(cleanBtn);
-        add(buttonPanel, BorderLayout.SOUTH);
-
-        Timer timer = new Timer(60000, e -> updatePet());
-        timer.start();
-
-        updateLabels();
-        setVisible(true);
+        return buttonPanel;
     }
 
     private void setupMenuBar() {
@@ -160,7 +170,7 @@ public class VirtualPet extends JFrame {
             return "(^-^) Happy";
         } else if (health < 50 || hunger >= 70 || tiredness >= 70 || boredom >= 70 || cleanliness <= 40) {
             return "(T_T) Sad";
-        } else if (health >= 50 && hunger <= 60 && tiredness <= 60 && boredom <= 60 && cleanliness >= 50) {
+        } else if (hunger <= 60 && tiredness <= 60 && boredom <= 60 && cleanliness >= 50) {
             return "(・_・) Okay";
         }
         return "(・_・) Okay";
@@ -168,7 +178,7 @@ public class VirtualPet extends JFrame {
 
 
     private void setPetImage(String imageFileName) {
-        ImageIcon newIcon = new ImageIcon(getClass().getResource("/" + imageFileName));
+        ImageIcon newIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/" + imageFileName)));
         petImageLabel.setIcon(newIcon);
     }
 
