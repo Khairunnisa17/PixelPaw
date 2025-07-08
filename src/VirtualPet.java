@@ -176,9 +176,9 @@ public class VirtualPet extends JFrame {
         } else if (health < 50 || hunger >= 70 || tiredness >= 70 || boredom >= 70 || cleanliness <= 40) {
             return "(T_T) Sad";
         } else if (hunger <= 60 && tiredness <= 60 && boredom <= 60 && cleanliness >= 50) {
-            return "(・_・) Okay";
+            return "(0_0) Okay";
         }
-        return "(・_・) Okay";
+        return "(0_0) Okay";
     }
 
     private void setPetImage(String imageFileName) {
