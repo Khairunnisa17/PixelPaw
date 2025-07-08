@@ -156,14 +156,16 @@ public class VirtualPet extends JFrame {
     }
 
     private String getMood() {
-        if (health >= 70 && tiredness <= 30 && boredom <= 30 && cleanliness >= 60) {
-            return "(＾◡＾) Happy";
-        } else if (health <= 40 || tiredness >= 80 || boredom >= 80 || cleanliness <= 30) {
+        if (health >= 80 && hunger <= 30 && tiredness <= 30 && boredom <= 30 && cleanliness >= 70) {
+            return "(^-^) Happy";
+        } else if (health < 50 || hunger >= 70 || tiredness >= 70 || boredom >= 70 || cleanliness <= 40) {
             return "(T_T) Sad";
-        } else {
+        } else if (health >= 50 && hunger <= 60 && tiredness <= 60 && boredom <= 60 && cleanliness >= 50) {
             return "(・_・) Okay";
         }
+        return "(・_・) Okay";
     }
+
 
     private void setPetImage(String imageFileName) {
         ImageIcon newIcon = new ImageIcon(getClass().getResource("/" + imageFileName));
@@ -172,7 +174,7 @@ public class VirtualPet extends JFrame {
 
     private void setPetImageTemporarily(String imageFileName) {
         setPetImage(imageFileName);
-        new Timer(3000, e -> setPetImage(petType + "_normal.png")).start();
+        new Timer(3500, e -> setPetImage(petType + "_normal.png")).start();
     }
 
     private void savePet() {

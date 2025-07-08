@@ -1,6 +1,6 @@
-Pet Name: KAKK
-Hunger: 156
-Health: 1546
-Tiredness: 55
-Boredom: 556
-Cleanliness: 565
+Pet Name: 4
+Hunger: 55
+Health: 100
+Tiredness: 10
+Boredom: 25
+Cleanliness: 65
