@@ -62,6 +62,8 @@ public class VirtualPet extends JFrame {
         JPanel buttonPanel = getJPanel();
         add(buttonPanel, BorderLayout.SOUTH);
 
+        playPetSound(petType); // Play pet sound on start
+
         Timer timer = new Timer(60000, event -> updatePet());
         timer.start();
 
@@ -73,13 +75,25 @@ public class VirtualPet extends JFrame {
         JPanel buttonPanel = new JPanel();
         JButton feedBtn = new JButton("Feed 🍖");
         JButton playBtn = new JButton("Play 🎾");
-        JButton napBtn = new JButton("Nap 😴");
+        JButton napBtn = new JButton("Nap 🛏");
         JButton cleanBtn = new JButton("Clean 🛁");
 
-        feedBtn.addActionListener(event -> feedPet());
-        playBtn.addActionListener(event -> playPet());
-        napBtn.addActionListener(event -> restPet());
-        cleanBtn.addActionListener(event -> cleanPet());
+        feedBtn.addActionListener(event -> {
+            feedPet();
+            playPetSound(petType + "_eat");
+        });
+        playBtn.addActionListener(event -> {
+            playPet();
+            playPetSound(petType + "_play");
+        });
+        napBtn.addActionListener(event -> {
+            restPet();
+            playPetSound(petType + "_nap");
+        });
+        cleanBtn.addActionListener(event -> {
+            cleanPet();
+            playPetSound(petType + "_clean");
+        });
 
         buttonPanel.add(feedBtn);
         buttonPanel.add(playBtn);
@@ -118,7 +132,6 @@ public class VirtualPet extends JFrame {
         tiredness = Math.min(tiredness + 5, 100);
         cleanliness = Math.max(cleanliness - 10, 0);
         setPetImageTemporarily(petType + "_eating.png");
-        playPetSound();
         updateLabels();
     }
 
@@ -129,7 +142,6 @@ public class VirtualPet extends JFrame {
         hunger = Math.min(hunger + 5, 100);
         cleanliness = Math.max(cleanliness - 5, 0);
         setPetImageTemporarily(petType + "_happy.png");
-        playPetSound();
         updateLabels();
     }
 
@@ -137,13 +149,11 @@ public class VirtualPet extends JFrame {
         tiredness = Math.max(tiredness - 30, 0);
         boredom = Math.min(boredom + 5, 100);
         setPetImageTemporarily(petType + "_sleeping.png");
-        playPetSound();
         updateLabels();
     }
 
     private void cleanPet() {
         cleanliness = Math.min(cleanliness + 30, 100);
-        playPetSound();
         JOptionPane.showMessageDialog(this, petName + " feels clean now!");
         updateLabels();
     }
@@ -175,10 +185,9 @@ public class VirtualPet extends JFrame {
             return "(^-^) Happy";
         } else if (health < 50 || hunger >= 70 || tiredness >= 70 || boredom >= 70 || cleanliness <= 40) {
             return "(T_T) Sad";
-        } else if (hunger <= 60 && tiredness <= 60 && boredom <= 60 && cleanliness >= 50) {
+        } else {
             return "(0_0) Okay";
         }
-        return "(0_0) Okay";
     }
 
     private void setPetImage(String imageFileName) {
@@ -211,7 +220,7 @@ public class VirtualPet extends JFrame {
         File file = new File("pet_save.txt");
 
         if (!file.exists()) {
-            JOptionPane.showMessageDialog(this, "No saved pet found (pet_save.txt not found)." );
+            JOptionPane.showMessageDialog(this, "No saved pet found (pet_save.txt not found).");
             return;
         }
 
@@ -245,25 +254,14 @@ public class VirtualPet extends JFrame {
         }
     }
 
-    private void playPetSound() {
+    private void playPetSound(String soundKey) {
         try {
-            String soundFileName;
-            if ("dog".equals(petType)) {
-                soundFileName = "dog.wav";
-            } else if ("cat".equals(petType)) {
-                soundFileName = "cat.wav";
-            } else if ("bird".equals(petType)) {
-                soundFileName = "bird.wav";
-            } else {
-                return;
-            }
-
+            String soundFileName = soundKey + ".wav";
             InputStream audioSrc = getClass().getResourceAsStream("/" + soundFileName);
             if (audioSrc == null) {
                 System.err.println("Sound file not found: " + soundFileName);
                 return;
             }
-
             BufferedInputStream bufferedIn = new BufferedInputStream(audioSrc);
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
             Clip clip = AudioSystem.getClip();
