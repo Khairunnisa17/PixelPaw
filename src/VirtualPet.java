@@ -13,6 +13,13 @@ public class VirtualPet extends JFrame {
     private final JLabel tiredLabel;
     private final JLabel boredomLabel;
     private final JLabel cleanlinessLabel;
+
+    private final JProgressBar hungerBar = new JProgressBar(0, 100);
+    private final JProgressBar healthBar = new JProgressBar(0, 100);
+    private final JProgressBar tiredBar = new JProgressBar(0, 100);
+    private final JProgressBar boredomBar = new JProgressBar(0, 100);
+    private final JProgressBar cleanlinessBar = new JProgressBar(0, 100);
+
     private final JLabel moodLabel;
     private final JLabel petImageLabel;
     private final String petImageFile;
@@ -22,6 +29,13 @@ public class VirtualPet extends JFrame {
     public VirtualPet(String imageFile, String name) {
         this.petImageFile = imageFile;
         this.petName = name;
+
+        // Bar colors
+        hungerBar.setForeground(Color.ORANGE);
+        healthBar.setForeground(Color.GREEN);
+        tiredBar.setForeground(Color.BLUE);
+        boredomBar.setForeground(Color.MAGENTA);
+        cleanlinessBar.setForeground(Color.CYAN);
 
         if (imageFile.startsWith("dog")) petType = "dog";
         else if (imageFile.startsWith("cat")) petType = "cat";
@@ -52,10 +66,14 @@ public class VirtualPet extends JFrame {
         cleanlinessLabel = new JLabel();
         moodLabel = new JLabel();
 
-        for (JLabel label : new JLabel[]{hungerLabel, healthLabel, tiredLabel, boredomLabel, cleanlinessLabel, moodLabel}) {
-            label.setFont(font);
-            statusPanel.add(label);
-        }
+        addLabelWithBar(statusPanel, "Hunger", hungerLabel, hungerBar, font);
+        addLabelWithBar(statusPanel, "Health", healthLabel, healthBar, font);
+        addLabelWithBar(statusPanel, "Tiredness", tiredLabel, tiredBar, font);
+        addLabelWithBar(statusPanel, "Boredom", boredomLabel, boredomBar, font);
+        addLabelWithBar(statusPanel, "Cleanliness", cleanlinessLabel, cleanlinessBar, font);
+
+        moodLabel.setFont(font);
+        statusPanel.add(moodLabel);
 
         add(statusPanel, BorderLayout.WEST);
 
@@ -172,10 +190,20 @@ public class VirtualPet extends JFrame {
 
     private void updateLabels() {
         hungerLabel.setText("Hunger: " + hunger);
+        hungerBar.setValue(hunger);
+
         healthLabel.setText("Health: " + health);
+        healthBar.setValue(health);
+
         tiredLabel.setText("Tiredness: " + tiredness);
+        tiredBar.setValue(tiredness);
+
         boredomLabel.setText("Boredom: " + boredom);
+        boredomBar.setValue(boredom);
+
         cleanlinessLabel.setText("Cleanliness: " + cleanliness);
+        cleanlinessBar.setValue(cleanliness);
+
         moodLabel.setText("Mood: " + getMood());
         setTitle("Your Pet: " + petName);
     }
@@ -252,6 +280,13 @@ public class VirtualPet extends JFrame {
             petName = newName.trim();
             updateLabels();
         }
+    }
+
+    private void addLabelWithBar(JPanel panel, String labelText, JLabel label, JProgressBar bar, Font font) {
+        label.setFont(font);
+        bar.setStringPainted(true);
+        panel.add(label);
+        panel.add(bar);
     }
 
     private void playPetSound(String soundKey) {
