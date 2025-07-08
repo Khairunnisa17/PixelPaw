@@ -62,7 +62,7 @@ public class VirtualPet extends JFrame {
         JPanel buttonPanel = getJPanel();
         add(buttonPanel, BorderLayout.SOUTH);
 
-        Timer timer = new Timer(60000, e -> updatePet());
+        Timer timer = new Timer(60000, event -> updatePet());
         timer.start();
 
         updateLabels();
@@ -76,10 +76,10 @@ public class VirtualPet extends JFrame {
         JButton napBtn = new JButton("Nap 😴");
         JButton cleanBtn = new JButton("Clean 🛁");
 
-        feedBtn.addActionListener(e -> feedPet());
-        playBtn.addActionListener(e -> playPet());
-        napBtn.addActionListener(e -> restPet());
-        cleanBtn.addActionListener(e -> cleanPet());
+        feedBtn.addActionListener(event -> feedPet());
+        playBtn.addActionListener(event -> playPet());
+        napBtn.addActionListener(event -> restPet());
+        cleanBtn.addActionListener(event -> cleanPet());
 
         buttonPanel.add(feedBtn);
         buttonPanel.add(playBtn);
@@ -97,10 +97,10 @@ public class VirtualPet extends JFrame {
         JMenuItem renameItem = new JMenuItem("Rename Pet");
         JMenuItem newPetItem = new JMenuItem("Adopt New Pet");
 
-        saveItem.addActionListener(e -> savePet());
-        loadItem.addActionListener(e -> loadPet());
-        renameItem.addActionListener(e -> renamePet());
-        newPetItem.addActionListener(e -> {
+        saveItem.addActionListener(event -> savePet());
+        loadItem.addActionListener(event -> loadPet());
+        renameItem.addActionListener(event -> renamePet());
+        newPetItem.addActionListener(event -> {
             dispose();
             Main.showPetSelection();
         });
@@ -188,7 +188,7 @@ public class VirtualPet extends JFrame {
 
     private void setPetImageTemporarily(String imageFileName) {
         setPetImage(imageFileName);
-        new Timer(3500, e -> setPetImage(petType + "_normal.png")).start();
+        new Timer(3500, event -> setPetImage(petType + "_normal.png")).start();
     }
 
     private void savePet() {
@@ -202,7 +202,7 @@ public class VirtualPet extends JFrame {
             writer.println("Boredom: " + boredom);
             writer.println("Cleanliness: " + cleanliness);
             JOptionPane.showMessageDialog(this, "Pet saved to pet_save.txt");
-        } catch (IOException e) {
+        } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Failed to save pet.");
         }
     }
@@ -232,7 +232,7 @@ public class VirtualPet extends JFrame {
             updateLabels();
 
             JOptionPane.showMessageDialog(this, "Pet loaded from pet_save.txt");
-        } catch (IOException | NumberFormatException | NullPointerException e) {
+        } catch (IOException | NumberFormatException | NullPointerException ex) {
             JOptionPane.showMessageDialog(this, "Failed to load pet. Make sure pet_save.txt is correctly formatted.");
         }
     }
@@ -246,31 +246,25 @@ public class VirtualPet extends JFrame {
     }
 
     private void playPetSound() {
-        String soundFileName = null;
-
-        switch (petType) {
-            case "dog":
-                soundFileName = "dog.wav";
-                break;
-            case "cat":
-                soundFileName = "cat.wav";
-                break;
-            case "bird":
-                soundFileName = "bird.wav";
-                break;
-            default:
-                return;
-        }
-
         try {
+            String soundFileName;
+            if ("dog".equals(petType)) {
+                soundFileName = "dog.wav";
+            } else if ("cat".equals(petType)) {
+                soundFileName = "cat.wav";
+            } else if ("bird".equals(petType)) {
+                soundFileName = "bird.wav";
+            } else {
+                return;
+            }
+
             File soundFile = new File(Objects.requireNonNull(getClass().getResource("/" + soundFileName)).getFile());
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
             Clip clip = AudioSystem.getClip();
             clip.open(audioStream);
             clip.start();
-        } catch (Exception e) {
-            System.err.println("Failed to play sound: " + soundFileName);
-            e.printStackTrace();
+        } catch (Exception ex) {
+            System.err.println("Failed to play pet sound.");
         }
     }
 }
