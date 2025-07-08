@@ -17,7 +17,7 @@ public class Main {
 
     public static void showPetSelection() {
         JFrame frame = new JFrame("Choose Your Pet");
-        frame.setSize(400, 300);
+        frame.setSize(1300, 700);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new GridLayout(1, 3));
 
