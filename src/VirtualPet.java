@@ -57,7 +57,7 @@ public class VirtualPet extends JFrame {
         JButton feedBtn = new JButton("Feed 🍖");
         JButton playBtn = new JButton("Play 🎾");
         JButton napBtn = new JButton("Nap 😴");
-        JButton cleanBtn = new JButton("Clean 🧹");
+        JButton cleanBtn = new JButton("Clean 🛁");
 
         feedBtn.addActionListener(e -> feedPet());
         playBtn.addActionListener(e -> playPet());
@@ -157,11 +157,11 @@ public class VirtualPet extends JFrame {
 
     private String getMood() {
         if (health >= 70 && tiredness <= 30 && boredom <= 30 && cleanliness >= 60) {
-            return "😊 Happy";
+            return "(＾◡＾) Happy";
         } else if (health <= 40 || tiredness >= 80 || boredom >= 80 || cleanliness <= 30) {
-            return "😢 Sad";
+            return "(T_T) Sad";
         } else {
-            return "😐 Okay";
+            return "(・_・) Okay";
         }
     }
 
