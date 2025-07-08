@@ -71,7 +71,6 @@ public class VirtualPet extends JFrame {
         addLabelWithBar(statusPanel, "Tiredness", tiredLabel, tiredBar, font);
         addLabelWithBar(statusPanel, "Boredom", boredomLabel, boredomBar, font);
         addLabelWithBar(statusPanel, "Cleanliness", cleanlinessLabel, cleanlinessBar, font);
-
         moodLabel.setFont(font);
         statusPanel.add(moodLabel);
 
@@ -110,6 +109,7 @@ public class VirtualPet extends JFrame {
         });
         cleanBtn.addActionListener(event -> {
             cleanPet();
+            playPetSound(petType + "_clean");
         });
 
         buttonPanel.add(feedBtn);
@@ -283,7 +283,7 @@ public class VirtualPet extends JFrame {
 
     private void addLabelWithBar(JPanel panel, String labelText, JLabel label, JProgressBar bar, Font font) {
         label.setFont(font);
-        bar.setStringPainted(true);
+        bar.setStringPainted(false);
         panel.add(label);
         panel.add(bar);
     }

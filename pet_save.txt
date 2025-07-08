@@ -1,6 +1,6 @@
-Pet Name: mimi
-Hunger: 25
-Health: 100
-Tiredness: 20
-Boredom: 25
-Cleanliness: 45
+Pet Name: 4
+Hunger: 60
+Health: 0
+Tiredness: 0
+Boredom: 0
+Cleanliness: 50
