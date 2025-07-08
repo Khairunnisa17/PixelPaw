@@ -258,12 +258,19 @@ public class VirtualPet extends JFrame {
                 return;
             }
 
-            File soundFile = new File(Objects.requireNonNull(getClass().getResource("/" + soundFileName)).getFile());
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
+            InputStream audioSrc = getClass().getResourceAsStream("/" + soundFileName);
+            if (audioSrc == null) {
+                System.err.println("Sound file not found: " + soundFileName);
+                return;
+            }
+
+            BufferedInputStream bufferedIn = new BufferedInputStream(audioSrc);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
             Clip clip = AudioSystem.getClip();
             clip.open(audioStream);
             clip.start();
         } catch (Exception ex) {
+            ex.printStackTrace();
             System.err.println("Failed to play pet sound.");
         }
     }
