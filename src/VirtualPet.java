@@ -110,6 +110,7 @@ public class VirtualPet extends JFrame {
         });
         cleanBtn.addActionListener(event -> {
             cleanPet();
+            playPetSound(petType + "_clean");
         });
 
         buttonPanel.add(feedBtn);
