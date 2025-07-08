@@ -72,6 +72,9 @@ public class VirtualPet extends JFrame {
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.Y_AXIS));
         statusPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        //background
+        statusPanel.setBackground(new Color(255, 255, 153));
+
         hungerLabel = new JLabel();
         healthLabel = new JLabel();
         tiredLabel = new JLabel();
