@@ -1,1 +1,6 @@
-
+Pet Name: jjjj
+Hunger: 50
+Health: 100
+Tiredness: 30
+Boredom: 40
+Cleanliness: 70

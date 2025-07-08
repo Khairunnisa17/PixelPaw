@@ -184,13 +184,12 @@ public class VirtualPet extends JFrame {
         if (option == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
             try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
-                writer.println(petImageFile);
-                writer.println(petName);
-                writer.println(hunger);
-                writer.println(health);
-                writer.println(tiredness);
-                writer.println(boredom);
-                writer.println(cleanliness);
+                writer.println("Pet Name: " + petName);
+                writer.println("Hunger: " + hunger);
+                writer.println("Health: " + health);
+                writer.println("Tiredness: " + tiredness);
+                writer.println("Boredom: " + boredom);
+                writer.println("Cleanliness: " + cleanliness);
                 JOptionPane.showMessageDialog(this, "Pet saved to " + file.getName());
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this, "Failed to save pet.");
@@ -205,13 +204,13 @@ public class VirtualPet extends JFrame {
         if (option == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                petImageFile = reader.readLine();
-                petName = reader.readLine();
-                hunger = Integer.parseInt(reader.readLine());
-                health = Integer.parseInt(reader.readLine());
-                tiredness = Integer.parseInt(reader.readLine());
-                boredom = Integer.parseInt(reader.readLine());
-                cleanliness = Integer.parseInt(reader.readLine());
+                petName = reader.readLine().split(": ")[1].trim();
+                petImageFile = reader.readLine().split(": ")[1].trim();
+                hunger = Integer.parseInt(reader.readLine().split(": ")[1].trim());
+                health = Integer.parseInt(reader.readLine().split(": ")[1].trim());
+                tiredness = Integer.parseInt(reader.readLine().split(": ")[1].trim());
+                boredom = Integer.parseInt(reader.readLine().split(": ")[1].trim());
+                cleanliness = Integer.parseInt(reader.readLine().split(": ")[1].trim());
 
                 if (petImageFile.startsWith("dog")) petType = "dog";
                 else if (petImageFile.startsWith("cat")) petType = "cat";
@@ -221,11 +220,12 @@ public class VirtualPet extends JFrame {
                 setPetImage(petImageFile);
                 updateLabels();
                 JOptionPane.showMessageDialog(this, "Loaded pet from " + file.getName());
-            } catch (IOException | NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Failed to load pet.");
+            } catch (IOException | NumberFormatException | NullPointerException e) {
+                JOptionPane.showMessageDialog(this, "Failed to load pet.\nMake sure the file is in correct format.");
             }
         }
     }
+
 
     private void renamePet() {
         String newName = JOptionPane.showInputDialog(this, "Enter new pet name:");
