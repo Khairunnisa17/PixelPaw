@@ -17,21 +17,31 @@ public class Main {
 
     public static void showPetSelection() {
         JFrame frame = new JFrame("Choose Your Pet");
-        frame.setSize(450, 450);
+        //frame.setSize(450, 450);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(1, 3));
+        frame.setLayout(new GridLayout(1, 3, 10, 10));
 
         frame.add(createPetButton("Dog", "dog_normal.png"));
         frame.add(createPetButton("Cat", "cat_normal.png"));
         frame.add(createPetButton("Bird", "bird_normal.png"));
 
+        frame.pack();           // size to fit buttons
+        frame.setLocationRelativeTo(null); // center on screen
         frame.setVisible(true);
     }
 
     private static JButton createPetButton(String name, String imageFile) {
         ImageIcon icon = null;
         try {
-            icon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/" + imageFile)));
+
+            // 1. Load raw icon
+            ImageIcon raw = new ImageIcon(Objects.requireNonNull(
+                    Main.class.getResource("/" + imageFile)
+            ));
+
+            // 2. Scale it
+            Image scaled = raw.getImage().getScaledInstance(260, 260, Image.SCALE_SMOOTH);
+            icon = new ImageIcon(scaled);
         }
         catch (Exception e) {
             System.out.println("Image not found: " + imageFile);
@@ -48,6 +58,9 @@ public class Main {
                 new VirtualPet(imageFile, petName.trim());
             }
         });
+
+        // 3. Force all buttons to the same preferred size
+        button.setPreferredSize(new Dimension(250, 300));
 
         return button;
     }

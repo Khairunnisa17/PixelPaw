@@ -49,13 +49,14 @@ public class VirtualPet extends JFrame {
 
         setupMenuBar();
 
-        //pet image + pet name
+        //pet image + pet name = center
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
 
         //position - pet image
         ImageIcon petIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/" + imageFile)));
-        petImageLabel = new JLabel(petIcon);
+        Image scaledImage = petIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        petImageLabel = new JLabel(new ImageIcon(scaledImage));
         petImageLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // center image
         topPanel.add(petImageLabel);
 
@@ -107,6 +108,7 @@ public class VirtualPet extends JFrame {
         timer.start();
 
         updateLabels();
+        setLocationRelativeTo(null);   //center the window
         setVisible(true);
     }
 
@@ -243,9 +245,11 @@ public class VirtualPet extends JFrame {
         }
     }
 
+    //Always scale new images before updating label
     private void setPetImage(String imageFileName) {
-        ImageIcon newIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/" + imageFileName)));
-        petImageLabel.setIcon(newIcon);
+        ImageIcon rawIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/" + imageFileName)));
+        Image scaled = rawIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        petImageLabel.setIcon(new ImageIcon(scaled));
     }
 
     private void setPetImageTemporarily(String imageFileName) {
