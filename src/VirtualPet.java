@@ -105,7 +105,7 @@ public class VirtualPet extends JFrame {
     private JPanel getJPanel() {
         JPanel buttonPanel = new JPanel();
         //background
-        buttonPanel.setBackground(new Color(153, 76, 0));
+        buttonPanel.setBackground(new Color(154, 76, 0));
 
         JButton feedBtn = new JButton("Feed 🍖");
         JButton playBtn = new JButton("Play 🎾");
