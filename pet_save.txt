@@ -1,6 +1,6 @@
-Pet Name: jjjj
-Hunger: 50
-Health: 100
-Tiredness: 30
-Boredom: 40
-Cleanliness: 70
+Pet Name: KAKK
+Hunger: 156
+Health: 1546
+Tiredness: 55
+Boredom: 556
+Cleanliness: 565

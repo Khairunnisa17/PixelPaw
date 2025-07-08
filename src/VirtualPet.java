@@ -176,55 +176,52 @@ public class VirtualPet extends JFrame {
     }
 
     private void savePet() {
-        String defaultName = "save_" + petName.toLowerCase().replaceAll("\\s+", "") + ".txt";
-        JFileChooser chooser = new JFileChooser();
-        chooser.setSelectedFile(new File(defaultName));
-        int option = chooser.showSaveDialog(this);
+        File file = new File("pet_save.txt"); // fixed file name
 
-        if (option == JFileChooser.APPROVE_OPTION) {
-            File file = chooser.getSelectedFile();
-            try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
-                writer.println("Pet Name: " + petName);
-                writer.println("Hunger: " + hunger);
-                writer.println("Health: " + health);
-                writer.println("Tiredness: " + tiredness);
-                writer.println("Boredom: " + boredom);
-                writer.println("Cleanliness: " + cleanliness);
-                JOptionPane.showMessageDialog(this, "Pet saved to " + file.getName());
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Failed to save pet.");
-            }
+        try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
+            writer.println("Pet Name: " + petName);
+            writer.println("Hunger: " + hunger);
+            writer.println("Health: " + health);
+            writer.println("Tiredness: " + tiredness);
+            writer.println("Boredom: " + boredom);
+            writer.println("Cleanliness: " + cleanliness);
+            JOptionPane.showMessageDialog(this, "Pet saved to pet_save.txt");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Failed to save pet.");
         }
     }
+
 
     private void loadPet() {
-        JFileChooser chooser = new JFileChooser();
-        int option = chooser.showOpenDialog(this);
+        File file = new File("pet_save.txt"); // fixed file name
 
-        if (option == JFileChooser.APPROVE_OPTION) {
-            File file = chooser.getSelectedFile();
-            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                petName = reader.readLine().split(": ")[1].trim();
-                petImageFile = reader.readLine().split(": ")[1].trim();
-                hunger = Integer.parseInt(reader.readLine().split(": ")[1].trim());
-                health = Integer.parseInt(reader.readLine().split(": ")[1].trim());
-                tiredness = Integer.parseInt(reader.readLine().split(": ")[1].trim());
-                boredom = Integer.parseInt(reader.readLine().split(": ")[1].trim());
-                cleanliness = Integer.parseInt(reader.readLine().split(": ")[1].trim());
+        if (!file.exists()) {
+            JOptionPane.showMessageDialog(this, "No saved pet found (pet_save.txt not found).");
+            return;
+        }
 
-                if (petImageFile.startsWith("dog")) petType = "dog";
-                else if (petImageFile.startsWith("cat")) petType = "cat";
-                else if (petImageFile.startsWith("bird")) petType = "bird";
-                else petType = "pet";
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            petName = reader.readLine().split(": ")[1].trim();
+            hunger = Integer.parseInt(reader.readLine().split(": ")[1].trim());
+            health = Integer.parseInt(reader.readLine().split(": ")[1].trim());
+            tiredness = Integer.parseInt(reader.readLine().split(": ")[1].trim());
+            boredom = Integer.parseInt(reader.readLine().split(": ")[1].trim());
+            cleanliness = Integer.parseInt(reader.readLine().split(": ")[1].trim());
 
-                setPetImage(petImageFile);
-                updateLabels();
-                JOptionPane.showMessageDialog(this, "Loaded pet from " + file.getName());
-            } catch (IOException | NumberFormatException | NullPointerException e) {
-                JOptionPane.showMessageDialog(this, "Failed to load pet.\nMake sure the file is in correct format.");
-            }
+            if (petImageFile.startsWith("dog")) petType = "dog";
+            else if (petImageFile.startsWith("cat")) petType = "cat";
+            else if (petImageFile.startsWith("bird")) petType = "bird";
+            else petType = "pet";
+
+            setPetImage(petImageFile);
+            updateLabels();
+
+            JOptionPane.showMessageDialog(this, "Pet loaded from pet_save.txt");
+        } catch (IOException | NumberFormatException | NullPointerException e) {
+            JOptionPane.showMessageDialog(this, "Failed to load pet. Make sure pet_save.txt is correctly formatted.");
         }
     }
+
 
 
     private void renamePet() {
