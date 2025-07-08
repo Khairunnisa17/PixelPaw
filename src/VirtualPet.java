@@ -25,6 +25,7 @@ public class VirtualPet extends JFrame {
     private final String petImageFile;
     private String petName;
     private String petType;
+    private Clip currentClip;
 
     public VirtualPet(String imageFile, String name) {
         this.petImageFile = imageFile;
@@ -298,7 +299,8 @@ public class VirtualPet extends JFrame {
             updateLabels();
 
             JOptionPane.showMessageDialog(this, "Pet loaded from pet_save.txt");
-        } catch (IOException | NumberFormatException | NullPointerException ex) {
+        }
+        catch (IOException | NumberFormatException | NullPointerException ex) {
             JOptionPane.showMessageDialog(this, "Failed to load pet. Make sure pet_save.txt is correctly formatted.");
         }
     }
@@ -320,6 +322,11 @@ public class VirtualPet extends JFrame {
 
     private void playPetSound(String soundKey) {
         try {
+            if(currentClip != null && currentClip.isRunning()){
+                currentClip.stop();   // stop the current sound
+                currentClip.close();
+            }
+
             String soundFileName = soundKey + ".wav";
             InputStream audioSrc = getClass().getResourceAsStream("/" + soundFileName);
             if (audioSrc == null) {
@@ -328,10 +335,12 @@ public class VirtualPet extends JFrame {
             }
             BufferedInputStream bufferedIn = new BufferedInputStream(audioSrc);
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
+
             Clip clip = AudioSystem.getClip();
             clip.open(audioStream);
             clip.start();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             ex.printStackTrace();
             System.err.println("Failed to play pet sound.");
         }
