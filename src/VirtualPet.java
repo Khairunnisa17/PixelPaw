@@ -23,7 +23,7 @@ public class VirtualPet extends JFrame {
         else petType = "pet";
 
         setTitle("Your Pet: " + name);
-        setSize(500, 600);
+        setSize(600, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -221,8 +221,6 @@ public class VirtualPet extends JFrame {
             JOptionPane.showMessageDialog(this, "Failed to load pet. Make sure pet_save.txt is correctly formatted.");
         }
     }
-
-
 
     private void renamePet() {
         String newName = JOptionPane.showInputDialog(this, "Enter new pet name:");
