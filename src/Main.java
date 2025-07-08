@@ -32,7 +32,8 @@ public class Main {
         ImageIcon icon = null;
         try {
             icon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/" + imageFile)));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             System.out.println("Image not found: " + imageFile);
         }
 

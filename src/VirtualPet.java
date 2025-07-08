@@ -55,9 +55,16 @@ public class VirtualPet extends JFrame {
         petImageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(petImageLabel, BorderLayout.NORTH);
 
-        //panel - pet name
+        //font styles
         Font fontName = new Font("Arial", Font.BOLD, 20);
+        Font font = new Font("Arial", Font.PLAIN, 16);
+
+        //panel - display pet's name
+        JLabel nameLabel = new JLabel("Name: " + petName);
         JPanel namePanel = new JPanel();
+
+        nameLabel.setFont(fontName);
+        namePanel.add(nameLabel);
         namePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
         //panel - pet status
@@ -65,7 +72,6 @@ public class VirtualPet extends JFrame {
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.Y_AXIS));
         statusPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        Font font = new Font("Arial", Font.PLAIN, 16);
         hungerLabel = new JLabel();
         healthLabel = new JLabel();
         tiredLabel = new JLabel();
@@ -95,8 +101,12 @@ public class VirtualPet extends JFrame {
         setVisible(true);
     }
 
+    //panel - set of actions
     private JPanel getJPanel() {
         JPanel buttonPanel = new JPanel();
+        //background
+        buttonPanel.setBackground(new Color(153, 76, 0));
+
         JButton feedBtn = new JButton("Feed 🍖");
         JButton playBtn = new JButton("Play 🎾");
         JButton napBtn = new JButton("Nap 🛏");
