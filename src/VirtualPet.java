@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.util.Objects;
+import javax.swing.Timer;
 
 public class VirtualPet extends JFrame {
     private int hunger = 50, health = 100, tiredness = 30, boredom = 40, cleanliness = 70;
@@ -305,9 +306,11 @@ public class VirtualPet extends JFrame {
                 ? (int)(currentClip.getMicrosecondLength() / 1000)
                 : 3500;
 
-
-        new Timer(delay,event -> {setPetImage(petType + "_normal.png");
-        }).setRepeats(false);  //to prevent looping
+        //Create timer and set it
+        Timer resetTimer = new Timer(delay,event -> {setPetImage(petType + "_normal.png");
+        });
+        resetTimer.setRepeats(false);  //to prevent looping
+        resetTimer.start();
     }
 
     private void savePet() {
@@ -393,6 +396,14 @@ public class VirtualPet extends JFrame {
             currentClip = AudioSystem.getClip();
             currentClip.open(audioStream);
             currentClip.start();
+
+            //Reset image when sound finishes
+            currentClip.addLineListener(event -> {
+                if (event.getType() == LineEvent.Type.STOP) {
+                    setPetImage(petType + "_normal.png");
+                    currentClip.close();
+                }
+            });
         }
         catch (Exception ex) {
             ex.printStackTrace();
