@@ -18,10 +18,17 @@ public class Main {
     //STARTUP WELCOME SCREEN
     public static void showWelcomeScreen(){
         JFrame welcomeFrame = new JFrame("Welcome to Virtual Pet World!");
-        welcomeFrame.setSize(500, 300);
+        welcomeFrame.setSize(600, 400);
         welcomeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        welcomeFrame.setLayout(new BorderLayout());
+        welcomeFrame.setLocationRelativeTo(null);
 
+        //load bg image
+        ImageIcon bgIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/welcome_bg.png")));
+        Image bgImage = bgIcon.getImage().getScaledInstance(600, 400, Image.SCALE_SMOOTH);
+        JLabel backgroundLabel = new JLabel(new ImageIcon(bgImage));
+        backgroundLabel.setLayout(new BorderLayout());
+
+        //TITLE LABEL
         JLabel title = new JLabel("🐾 Welcome to Virtual Pet World 🐾", SwingConstants.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 26));
         title.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
@@ -34,11 +41,12 @@ public class Main {
         });
 
         JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setOpaque(false); // transparent
         centerPanel.add(startBtn);
 
-        welcomeFrame.add(title, BorderLayout.NORTH);
-        welcomeFrame.add(centerPanel, BorderLayout.CENTER);
-        welcomeFrame.setLocationRelativeTo(null); // Center window
+        backgroundLabel.add(title, BorderLayout.NORTH);
+        backgroundLabel.add(centerPanel, BorderLayout.CENTER);
+        welcomeFrame.setContentPane(backgroundLabel);
         welcomeFrame.setVisible(true);
     }
 
