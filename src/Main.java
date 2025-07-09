@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
 import javax.sound.sampled.*;
+import  java.io.InputStream;
+import java.io.BufferedInputStream;
 
 import static javax.swing.SwingUtilities.*;
 
@@ -33,7 +35,7 @@ public class Main {
         backgroundLabel.setLayout(new BorderLayout());
 
         //Play welcome music
-        Clip welcomeClip = playLoopingSound("/welcome_music.wav");
+        welcomeMusicClip = playLoopingSound("/welcome_music.wav");
 
         //TITLE LABEL
         JLabel title = new JLabel("🐾 Welcome to Virtual Pet World 🐾", SwingConstants.CENTER);
@@ -51,6 +53,7 @@ public class Main {
             if (welcomeMusicClip != null && welcomeMusicClip.isRunning()) {
                 welcomeMusicClip.stop();  // Stop music before moving on
             }
+            playStartSound();       //play sound effect
             welcomeFrame.dispose(); // Close welcome screen
             showPetSelection();     // Open pet selection
         });
@@ -82,6 +85,27 @@ public class Main {
         }
     }
 
+    private static void playStartSound() {
+        try {
+            String soundFile = "/start.wav";
+            InputStream audioSrc = Main.class.getResourceAsStream(soundFile);
+            if (audioSrc == null) {
+                System.err.println("Sound file not found: " + soundFile);
+                return;
+            }
+
+            BufferedInputStream bufferedIn = new BufferedInputStream(audioSrc);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public static void showPetSelection() {
         JFrame frame = new JFrame("Choose Your Pet");
         //frame.setSize(450, 450);
@@ -100,7 +124,6 @@ public class Main {
     private static JButton createPetButton(String name, String imageFile) {
         ImageIcon icon = null;
         try {
-
             // 1. Load raw icon
             ImageIcon raw = new ImageIcon(Objects.requireNonNull(
                     Main.class.getResource("/" + imageFile)
@@ -121,6 +144,12 @@ public class Main {
         button.addActionListener(e -> {
             String petName = JOptionPane.showInputDialog("Name your " + name + ":");
             if (petName != null && !petName.trim().isEmpty()) {
+                //Stop bg music when starting pet screen
+                if (welcomeMusicClip != null && welcomeMusicClip.isRunning()) {
+                    welcomeMusicClip.stop();
+                    welcomeMusicClip.close();
+                    welcomeMusicClip = null;
+                }
                 getWindowAncestor(button).dispose();
                 new VirtualPet(imageFile, petName.trim());
             }

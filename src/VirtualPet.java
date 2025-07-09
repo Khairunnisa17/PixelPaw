@@ -28,7 +28,9 @@ public class VirtualPet extends JFrame {
     private String petName;
     private String petType;
     private Clip currentClip;
+    private Clip backgroundMusicClip;
     private JTextArea thoughtLog;
+
 
     public VirtualPet(String imageFile, String name) {
         this.petImageFile = imageFile;
@@ -107,6 +109,17 @@ public class VirtualPet extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
 
         playPetSound(petType); // Play pet sound on start
+
+        // Stop welcome music (from Main)
+        if (Main.welcomeMusicClip != null && Main.welcomeMusicClip.isRunning()) {
+            Main.welcomeMusicClip.stop();
+            Main.welcomeMusicClip.close();
+            Main.welcomeMusicClip = null;
+        }
+
+        // Start pet background music
+        backgroundMusicClip = Main.playLoopingSound("/welcome_music.wav");
+
 
         Timer timer = new Timer(60000, event -> updatePet());
         timer.start();
@@ -293,9 +306,14 @@ public class VirtualPet extends JFrame {
 
     //Always scale new images before updating label
     private void setPetImage(String imageFileName) {
-        ImageIcon rawIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/" + imageFileName)));
-        Image scaled = rawIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-        petImageLabel.setIcon(new ImageIcon(scaled));
+        try {
+            ImageIcon rawIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/" + imageFileName)));
+            Image scaled = rawIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+            petImageLabel.setIcon(new ImageIcon(scaled));
+        }
+        catch (Exception e) {
+            System.err.println("Image not found: " + imageFileName);
+        }
     }
 
     private void setPetImageTemporarily(String imageFileName) {
@@ -379,29 +397,48 @@ public class VirtualPet extends JFrame {
 
     private void playPetSound(String soundKey) {
         try {
-            if(currentClip != null && currentClip.isRunning()){
-                currentClip.stop();   // stop the current sound
+
+            // Stop and close any currently playing clip
+            if (currentClip != null && currentClip.isRunning()) {
+                currentClip.stop();
                 currentClip.close();
+                currentClip = null;
             }
 
             String soundFileName = soundKey + ".wav";
             InputStream audioSrc = getClass().getResourceAsStream("/" + soundFileName);
+
             if (audioSrc == null) {
                 System.err.println("Sound file not found: " + soundFileName);
                 return;
             }
+
             BufferedInputStream bufferedIn = new BufferedInputStream(audioSrc);
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
 
-            currentClip = AudioSystem.getClip();
-            currentClip.open(audioStream);
-            currentClip.start();
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.setMicrosecondPosition(0);
+            clip.start();
+
+            //update sound
+            currentClip = clip;
+
+            //action image
+            if (soundKey.contains("_eat")) setPetImage(petType + "_eating.png");
+            else if (soundKey.contains("_play")) setPetImage(petType + "_happy.png");
+            else if (soundKey.contains("_nap")) setPetImage(petType + "_sleeping.png");
 
             //Reset image when sound finishes
-            currentClip.addLineListener(event -> {
+            clip.addLineListener(event -> {
                 if (event.getType() == LineEvent.Type.STOP) {
-                    setPetImage(petType + "_normal.png");
-                    currentClip.close();
+                    SwingUtilities.invokeLater(() -> {
+                        if (currentClip == clip) {
+                            setPetImage(petType + "_normal.png");
+                            currentClip.close();
+                            currentClip = null;
+                        }
+                    });
                 }
             });
         }
@@ -410,4 +447,5 @@ public class VirtualPet extends JFrame {
             System.err.println("Failed to play pet sound.");
         }
     }
+
 }
