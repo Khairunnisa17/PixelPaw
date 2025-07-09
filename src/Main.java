@@ -30,7 +30,7 @@ public class Main {
 
         //TITLE LABEL
         JLabel title = new JLabel("🐾 Welcome to Virtual Pet World 🐾", SwingConstants.CENTER);
-        title.setFont(new Font("SansSerif", Font.BOLD, 30));
+        title.setFont(new Font("Montserrat", Font.BOLD, 30));
         title.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
 
         JButton startBtn = new JButton("Start");
@@ -57,6 +57,7 @@ public class Main {
 
     public static void showPetSelection() {
         JFrame frame = new JFrame("Choose Your Pet");
+        //frame.setSize(450, 450);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new GridLayout(1, 3, 10, 10));
 
@@ -99,7 +100,7 @@ public class Main {
         });
 
         // 3. Force all buttons to the same preferred size
-        button.setPreferredSize(new Dimension(240, 300));
+        button.setPreferredSize(new Dimension(250, 300));
 
         return button;
     }

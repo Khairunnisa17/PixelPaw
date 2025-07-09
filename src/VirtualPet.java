@@ -117,13 +117,25 @@ public class VirtualPet extends JFrame {
     private JPanel getJPanel() {
         JPanel buttonPanel = new JPanel();
         //background
-        buttonPanel.setBackground(new Color(154, 76, 0));
+        buttonPanel.setBackground(new Color(154, 76, 0));   //bg brown
+        Color buttonBgColor = new Color(255, 224,163);  //pastel orange
+        Color borderColor = new Color(100, 60, 0);         // Border brown
 
         JButton feedBtn = new JButton("Feed 🍖");
         JButton playBtn = new JButton("Play 🎾");
         JButton napBtn = new JButton("Nap 🛏");
         JButton cleanBtn = new JButton("Clean 🛁");
 
+        // Customize all buttons consistently
+        for (JButton btn : new JButton[]{feedBtn, playBtn, napBtn, cleanBtn}) {
+            btn.setBackground(buttonBgColor);
+            btn.setForeground(Color.DARK_GRAY);
+            btn.setFocusPainted(false);
+            btn.setOpaque(true);
+            btn.setBorder(BorderFactory.createLineBorder(borderColor, 2));
+            btn.setPreferredSize(new Dimension(80, 30));
+
+        }
         feedBtn.addActionListener(event -> {
             feedPet();
             playPetSound(petType + "_eat");
