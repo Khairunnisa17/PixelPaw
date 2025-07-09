@@ -255,7 +255,15 @@ public class VirtualPet extends JFrame {
 
     private void setPetImageTemporarily(String imageFileName) {
         setPetImage(imageFileName);
-        new Timer(3500, event -> setPetImage(petType + "_normal.png")).start();
+
+        // Reset after sound ends or after 3.5 sec fallback
+        int delay = (currentClip != null && currentClip.getMicrosecondLength() > 0)
+                ? (int)(currentClip.getMicrosecondLength() / 1000)
+                : 3500;
+
+
+        new Timer(delay,event -> {setPetImage(petType + "_normal.png");
+        }).setRepeats(false);  //to prevent looping
     }
 
     private void savePet() {
@@ -336,9 +344,9 @@ public class VirtualPet extends JFrame {
             BufferedInputStream bufferedIn = new BufferedInputStream(audioSrc);
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
 
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
-            clip.start();
+            currentClip = AudioSystem.getClip();
+            currentClip.open(audioStream);
+            currentClip.start();
         }
         catch (Exception ex) {
             ex.printStackTrace();
