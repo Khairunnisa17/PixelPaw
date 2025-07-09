@@ -35,6 +35,11 @@ public class Main {
 
         JButton startBtn = new JButton("Start");
         startBtn.setFont(new Font("Arial", Font.PLAIN, 18));
+
+        // Set background and text color
+        startBtn.setBackground(new Color(255, 204, 102));  // light orange
+        startBtn.setForeground(Color.BLACK);
+
         startBtn.addActionListener(e -> {
             welcomeFrame.dispose(); // Close welcome screen
             showPetSelection();     // Open pet selection
