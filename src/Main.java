@@ -12,7 +12,34 @@ import static javax.swing.SwingUtilities.*;
 
 public class Main {
     public static void main(String[] args) {
-        invokeLater(Main::showPetSelection);
+        invokeLater(Main::showWelcomeScreen);
+    }
+
+    //STARTUP WELCOME SCREEN
+    public static void showWelcomeScreen(){
+        JFrame welcomeFrame = new JFrame("Welcome to Virtual Pet World!");
+        welcomeFrame.setSize(500, 300);
+        welcomeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        welcomeFrame.setLayout(new BorderLayout());
+
+        JLabel title = new JLabel("🐾 Welcome to Virtual Pet World 🐾", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 26));
+        title.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
+
+        JButton startBtn = new JButton("Start");
+        startBtn.setFont(new Font("Arial", Font.PLAIN, 18));
+        startBtn.addActionListener(e -> {
+            welcomeFrame.dispose(); // Close welcome screen
+            showPetSelection();     // Open pet selection
+        });
+
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.add(startBtn);
+
+        welcomeFrame.add(title, BorderLayout.NORTH);
+        welcomeFrame.add(centerPanel, BorderLayout.CENTER);
+        welcomeFrame.setLocationRelativeTo(null); // Center window
+        welcomeFrame.setVisible(true);
     }
 
     public static void showPetSelection() {
