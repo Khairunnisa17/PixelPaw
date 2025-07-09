@@ -171,7 +171,7 @@ public class VirtualPet extends JFrame {
         });
         cleanBtn.addActionListener(event -> {
             cleanPet();
-            playPetSound(petType + "_clean");
+            playPetSound( "clean");
         });
 
         buttonPanel.add(feedBtn);
@@ -245,6 +245,7 @@ public class VirtualPet extends JFrame {
         JOptionPane.showMessageDialog(this, petName + " feels clean now!");
         addThought(petName + " feels so much cleaner! 🛁");
         updateLabels();
+
     }
 
     private void updatePet() {
@@ -320,7 +321,8 @@ public class VirtualPet extends JFrame {
             writer.println("Boredom: " + boredom);
             writer.println("Cleanliness: " + cleanliness);
             JOptionPane.showMessageDialog(this, "Pet saved to pet_save.txt");
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Failed to save pet.");
         }
     }
