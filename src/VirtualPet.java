@@ -23,10 +23,11 @@ public class VirtualPet extends JFrame {
     private final JLabel moodLabel;
     private final JLabel petImageLabel;
     private final String petImageFile;
-    private JLabel nameLabel;
+    private final JLabel nameLabel;
     private String petName;
     private String petType;
     private Clip currentClip;
+    private JTextArea thoughtLog;
 
     public VirtualPet(String imageFile, String name) {
         this.petImageFile = imageFile;
@@ -109,6 +110,25 @@ public class VirtualPet extends JFrame {
         Timer timer = new Timer(60000, event -> updatePet());
         timer.start();
 
+        //Thought bubble
+        JPanel eastPanel = new JPanel();
+        eastPanel.setLayout(new BorderLayout());
+        eastPanel.setPreferredSize(new Dimension(180, 0)); // Width only
+        eastPanel.setBackground(new Color(255, 255, 240)); // Light pastel
+
+        thoughtLog = new JTextArea();
+        thoughtLog.setEditable(false);
+        thoughtLog.setLineWrap(true);
+        thoughtLog.setWrapStyleWord(true);
+        thoughtLog.setFont(new Font("Segoe UI Emoji", Font.ITALIC, 14));
+        thoughtLog.setBackground(new Color(255, 255, 240));
+        thoughtLog.setForeground(new Color(60, 60, 60));
+        thoughtLog.setBorder(BorderFactory.createTitledBorder("💭 Thoughts"));
+
+        eastPanel.add(new JScrollPane(thoughtLog), BorderLayout.CENTER);
+        add(eastPanel, BorderLayout.EAST);
+
+
         updateLabels();
         setLocationRelativeTo(null);   //center the window
         setVisible(true);
@@ -161,6 +181,12 @@ public class VirtualPet extends JFrame {
         return buttonPanel;
     }
 
+    private void addThought(String message) {
+        thoughtLog.append("• " + message + "\n");
+        thoughtLog.setCaretPosition(thoughtLog.getDocument().getLength()); // Auto-scroll
+    }
+
+
     private void setupMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Options");
@@ -191,6 +217,7 @@ public class VirtualPet extends JFrame {
         tiredness = Math.min(tiredness + 5, 100);
         cleanliness = Math.max(cleanliness - 10, 0);
         setPetImageTemporarily(petType + "_eating.png");
+        addThought(petName + " enjoyed a tasty treat! 🍖");
         updateLabels();
     }
 
@@ -201,6 +228,7 @@ public class VirtualPet extends JFrame {
         hunger = Math.min(hunger + 5, 100);
         cleanliness = Math.max(cleanliness - 5, 0);
         setPetImageTemporarily(petType + "_happy.png");
+        addThought(petName + " had a fun time playing! 🎾");
         updateLabels();
     }
 
@@ -208,12 +236,14 @@ public class VirtualPet extends JFrame {
         tiredness = Math.max(tiredness - 30, 0);
         boredom = Math.min(boredom + 5, 100);
         setPetImageTemporarily(petType + "_sleeping.png");
+        addThought(petName + " is taking a well-deserved nap. 😴");
         updateLabels();
     }
 
     private void cleanPet() {
         cleanliness = Math.min(cleanliness + 30, 100);
         JOptionPane.showMessageDialog(this, petName + " feels clean now!");
+        addThought(petName + " feels so much cleaner! 🛁");
         updateLabels();
     }
 
