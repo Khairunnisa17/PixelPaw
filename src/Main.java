@@ -39,6 +39,7 @@ public class Main {
         // Set background and text color
         startBtn.setBackground(new Color(255, 204, 102));  // light orange
         startBtn.setForeground(Color.BLACK);
+        title.setForeground(Color.WHITE);
 
         startBtn.addActionListener(e -> {
             welcomeFrame.dispose(); // Close welcome screen
