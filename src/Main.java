@@ -7,12 +7,16 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
+import javax.sound.sampled.*;
 
 import static javax.swing.SwingUtilities.*;
 
 public class Main {
+    public static Clip welcomeMusicClip;
+
     public static void main(String[] args) {
         invokeLater(Main::showWelcomeScreen);
+
     }
 
     //STARTUP WELCOME SCREEN
@@ -28,6 +32,9 @@ public class Main {
         JLabel backgroundLabel = new JLabel(new ImageIcon(bgImage));
         backgroundLabel.setLayout(new BorderLayout());
 
+        //Play welcome music
+        Clip welcomeClip = playLoopingSound("/welcome_music.wav");
+
         //TITLE LABEL
         JLabel title = new JLabel("🐾 Welcome to Virtual Pet World 🐾", SwingConstants.CENTER);
         title.setFont(new Font("Montserrat", Font.BOLD, 30));
@@ -41,6 +48,9 @@ public class Main {
         startBtn.setForeground(Color.BLACK);
 
         startBtn.addActionListener(e -> {
+            if (welcomeMusicClip != null && welcomeMusicClip.isRunning()) {
+                welcomeMusicClip.stop();  // Stop music before moving on
+            }
             welcomeFrame.dispose(); // Close welcome screen
             showPetSelection();     // Open pet selection
         });
@@ -53,6 +63,23 @@ public class Main {
         backgroundLabel.add(centerPanel, BorderLayout.CENTER);
         welcomeFrame.setContentPane(backgroundLabel);
         welcomeFrame.setVisible(true);
+    }
+
+    public static Clip playLoopingSound(String resourcePath) {
+        try {
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(
+                    Objects.requireNonNull(Main.class.getResourceAsStream(resourcePath))
+            );
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.loop(Clip.LOOP_CONTINUOUSLY); // Loop until stopped
+            clip.start();
+            return clip;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static void showPetSelection() {
