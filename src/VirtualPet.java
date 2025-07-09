@@ -23,6 +23,7 @@ public class VirtualPet extends JFrame {
     private final JLabel moodLabel;
     private final JLabel petImageLabel;
     private final String petImageFile;
+    private JLabel nameLabel;
     private String petName;
     private String petType;
     private Clip currentClip;
@@ -67,7 +68,7 @@ public class VirtualPet extends JFrame {
 
         //panel - display pet's name
         JPanel namePanel = new JPanel();
-        JLabel nameLabel = new JLabel("Name: " + petName);
+        nameLabel = new JLabel("Name: " + petName);
 
         nameLabel.setFont(fontName);
         nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // center name
@@ -329,6 +330,7 @@ public class VirtualPet extends JFrame {
         String newName = JOptionPane.showInputDialog(this, "Enter new pet name:");
         if (newName != null && !newName.trim().isEmpty()) {
             petName = newName.trim();
+            nameLabel.setText("Name: " + petName);  //update name under pet image
             updateLabels();
         }
     }
