@@ -105,19 +105,35 @@ public class Main {
         }
     }
 
-
     public static void showPetSelection() {
         JFrame frame = new JFrame("Choose Your Pet");
-        //frame.setSize(450, 450);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(1, 3, 10, 10));
+        frame.setLayout(new BorderLayout());
 
-        frame.add(createPetButton("Dog", "dog_normal.png"));
-        frame.add(createPetButton("Cat", "cat_normal.png"));
-        frame.add(createPetButton("Bird", "bird_normal.png"));
+        // Menu bar
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("Options");
+        JMenuItem backItem = new JMenuItem("Back");
 
-        frame.pack();           // size to fit buttons
-        frame.setLocationRelativeTo(null); // center on screen
+        backItem.addActionListener(e -> {
+            frame.dispose();         // Close pet selection screen
+            showWelcomeScreen();     // Go back to welcome screen
+        });
+
+        menu.add(backItem);
+        menuBar.add(menu);
+        frame.setJMenuBar(menuBar);
+
+        // Panel for pet buttons
+        JPanel petPanel = new JPanel(new GridLayout(1, 3, 10, 10));
+        petPanel.add(createPetButton("Dog", "dog_normal.png"));
+        petPanel.add(createPetButton("Cat", "cat_normal.png"));
+        petPanel.add(createPetButton("Bird", "bird_normal.png"));
+
+        frame.add(petPanel, BorderLayout.CENTER);
+
+        frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 

@@ -208,12 +208,12 @@ public class VirtualPet extends JFrame {
         JMenuItem saveItem = new JMenuItem("Save Pet");
         JMenuItem loadItem = new JMenuItem("Load Pet");
         JMenuItem renameItem = new JMenuItem("Rename Pet");
-        JMenuItem newPetItem = new JMenuItem("Adopt New Pet");
+        JMenuItem backItem = new JMenuItem("Back");
 
         saveItem.addActionListener(event -> savePet());
         loadItem.addActionListener(event -> loadPet());
         renameItem.addActionListener(event -> renamePet());
-        newPetItem.addActionListener(event -> {
+        backItem.addActionListener(event -> {
             dispose();
             Main.showPetSelection();
         });
@@ -221,7 +221,7 @@ public class VirtualPet extends JFrame {
         menu.add(saveItem);
         menu.add(loadItem);
         menu.add(renameItem);
-        menu.add(newPetItem);
+        menu.add(backItem);
         menuBar.add(menu);
         setJMenuBar(menuBar);
     }
