@@ -1,6 +1,6 @@
-Pet Name: asd
-Hunger: 50
-Health: 100
-Tiredness: 30
-Boredom: 40
-Cleanliness: 70
+Pet Name: hije
+Hunger: 100
+Health: 0
+Tiredness: 50
+Boredom: 50
+Cleanliness: 10
