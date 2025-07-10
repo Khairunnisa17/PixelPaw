@@ -110,15 +110,9 @@ public class VirtualPet extends JFrame {
 
         playPetSound(petType); // Play pet sound on start
 
-        // Stop welcome music (from Main)
-        if (Main.welcomeMusicClip != null && Main.welcomeMusicClip.isRunning()) {
-            Main.welcomeMusicClip.stop();
-            Main.welcomeMusicClip.close();
-            Main.welcomeMusicClip = null;
-        }
-
         // Start pet background music
         backgroundMusicClip = Main.playLoopingSound("/welcome_music.wav");
+
 
         Timer timer = new Timer(60000, event -> updatePet());
         timer.start();
@@ -140,6 +134,7 @@ public class VirtualPet extends JFrame {
 
         eastPanel.add(new JScrollPane(thoughtLog), BorderLayout.CENTER);
         add(eastPanel, BorderLayout.EAST);
+
 
         updateLabels();
         setLocationRelativeTo(null);   //center the window
@@ -198,21 +193,6 @@ public class VirtualPet extends JFrame {
         thoughtLog.setCaretPosition(thoughtLog.getDocument().getLength()); // Auto-scroll
     }
 
-    //Stop all sounds
-    private void stopAllSounds() {
-        if (backgroundMusicClip != null) {
-            if (backgroundMusicClip.isRunning()) backgroundMusicClip.stop();
-            backgroundMusicClip.close();
-            backgroundMusicClip = null;
-        }
-
-        if (currentClip != null) {
-            if (currentClip.isRunning()) currentClip.stop();
-            currentClip.close();
-            currentClip = null;
-        }
-    }
-
 
     private void setupMenuBar() {
         JMenuBar menuBar = new JMenuBar();
@@ -221,13 +201,12 @@ public class VirtualPet extends JFrame {
         JMenuItem saveItem = new JMenuItem("Save Pet");
         JMenuItem loadItem = new JMenuItem("Load Pet");
         JMenuItem renameItem = new JMenuItem("Rename Pet");
-        JMenuItem newPetItem = new JMenuItem("Adopt New Pet");
+        JMenuItem backItem = new JMenuItem("Back");
 
         saveItem.addActionListener(event -> savePet());
         loadItem.addActionListener(event -> loadPet());
         renameItem.addActionListener(event -> renamePet());
-        newPetItem.addActionListener(event -> {
-            stopAllSounds();       // Stop background + current sounds
+        backItem.addActionListener(event -> {
             dispose();
             Main.showPetSelection();
         });
@@ -235,7 +214,7 @@ public class VirtualPet extends JFrame {
         menu.add(saveItem);
         menu.add(loadItem);
         menu.add(renameItem);
-        menu.add(newPetItem);
+        menu.add(backItem);
         menuBar.add(menu);
         setJMenuBar(menuBar);
     }
@@ -413,11 +392,9 @@ public class VirtualPet extends JFrame {
         try {
 
             // Stop and close any currently playing clip
-            if (currentClip != null) {
-                try {
-                    currentClip.stop();
-                    currentClip.close();
-                } catch (Exception ignored) {}
+            if (currentClip != null && currentClip.isRunning()) {
+                currentClip.stop();
+                currentClip.close();
                 currentClip = null;
             }
 
@@ -451,10 +428,7 @@ public class VirtualPet extends JFrame {
                     SwingUtilities.invokeLater(() -> {
                         if (currentClip == clip) {
                             setPetImage(petType + "_normal.png");
-                            try {
-                                clip.close();
-                            }
-                            catch (Exception ignored) {}
+                            currentClip.close();
                             currentClip = null;
                         }
                     });

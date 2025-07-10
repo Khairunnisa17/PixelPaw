@@ -22,44 +22,50 @@ public class Main {
     }
 
     //STARTUP WELCOME SCREEN
-    public static void showWelcomeScreen(){
+    public static void showWelcomeScreen() {
+        // Stop any previous music to prevent duplication
+        if (welcomeMusicClip != null) {
+            welcomeMusicClip.stop();
+            welcomeMusicClip.close();
+            welcomeMusicClip = null;
+        }
+
+        // Start welcome music
+        welcomeMusicClip = playLoopingSound("/welcome_music.wav");
+
         JFrame welcomeFrame = new JFrame("Welcome to Virtual Pet World!");
         welcomeFrame.setSize(600, 400);
         welcomeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         welcomeFrame.setLocationRelativeTo(null);
 
-        //load bg image
+        // Load background image
         ImageIcon bgIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/welcome_bg.png")));
         Image bgImage = bgIcon.getImage().getScaledInstance(600, 400, Image.SCALE_SMOOTH);
         JLabel backgroundLabel = new JLabel(new ImageIcon(bgImage));
         backgroundLabel.setLayout(new BorderLayout());
 
-        //Play welcome music
-        welcomeMusicClip = playLoopingSound("/welcome_music.wav");
-
-        //TITLE LABEL
         JLabel title = new JLabel("🐾 Welcome to Virtual Pet World 🐾", SwingConstants.CENTER);
         title.setFont(new Font("Montserrat", Font.BOLD, 30));
         title.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
 
         JButton startBtn = new JButton("Start");
         startBtn.setFont(new Font("Arial", Font.PLAIN, 22));
-
-        // Set background and text color
         startBtn.setBackground(new Color(255, 204, 102));  // light orange
         startBtn.setForeground(Color.BLACK);
 
         startBtn.addActionListener(e -> {
             if (welcomeMusicClip != null && welcomeMusicClip.isRunning()) {
-                welcomeMusicClip.stop();  // Stop music before moving on
+                welcomeMusicClip.stop();
+                welcomeMusicClip.close();
+                welcomeMusicClip = null;
             }
-            playStartSound();       //play sound effect
-            welcomeFrame.dispose(); // Close welcome screen
-            showPetSelection();     // Open pet selection
+            playStartSound();
+            welcomeFrame.dispose();
+            showPetSelection();
         });
 
         JPanel centerPanel = new JPanel(new GridBagLayout());
-        centerPanel.setOpaque(false); // transparent
+        centerPanel.setOpaque(false);
         centerPanel.add(startBtn);
 
         backgroundLabel.add(title, BorderLayout.NORTH);
@@ -105,19 +111,44 @@ public class Main {
         }
     }
 
-
     public static void showPetSelection() {
+        // ❗ Stop any existing music to prevent duplication
+        if (welcomeMusicClip != null) {
+            welcomeMusicClip.stop();
+            welcomeMusicClip.close();
+            welcomeMusicClip = null;
+        }
+
+        // ✅ Start welcome music
+        welcomeMusicClip = playLoopingSound("/welcome_music.wav");
+
         JFrame frame = new JFrame("Choose Your Pet");
-        //frame.setSize(450, 450);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(1, 3, 10, 10));
+        frame.setLayout(new BorderLayout());
 
-        frame.add(createPetButton("Dog", "dog_normal.png"));
-        frame.add(createPetButton("Cat", "cat_normal.png"));
-        frame.add(createPetButton("Bird", "bird_normal.png"));
+        // ⬇️ Add Menu Bar with "Back to Welcome"
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("Menu");
+        JMenuItem backItem = new JMenuItem("Back");
 
-        frame.pack();           // size to fit buttons
-        frame.setLocationRelativeTo(null); // center on screen
+        backItem.addActionListener(e -> {
+            frame.dispose();
+            showWelcomeScreen();
+        });
+
+        menu.add(backItem);
+        menuBar.add(menu);
+        frame.setJMenuBar(menuBar);
+
+        // ⬇️ Add pet buttons
+        JPanel petPanel = new JPanel(new GridLayout(1, 3, 10, 10));
+        petPanel.add(createPetButton("Dog", "dog_normal.png"));
+        petPanel.add(createPetButton("Cat", "cat_normal.png"));
+        petPanel.add(createPetButton("Bird", "bird_normal.png"));
+
+        frame.add(petPanel, BorderLayout.CENTER);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
