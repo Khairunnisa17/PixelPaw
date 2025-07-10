@@ -1,6 +1,6 @@
-Pet Name: ciki
-Hunger: 100
+Pet Name: asd
+Hunger: 50
 Health: 100
-Tiredness: 10
-Boredom: 0
-Cleanliness: 65
+Tiredness: 30
+Boredom: 40
+Cleanliness: 70

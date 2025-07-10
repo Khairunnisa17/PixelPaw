@@ -110,13 +110,6 @@ public class VirtualPet extends JFrame {
 
         playPetSound(petType); // Play pet sound on start
 
-        // Stop welcome music (from Main)
-        if (Main.welcomeMusicClip != null && Main.welcomeMusicClip.isRunning()) {
-            Main.welcomeMusicClip.stop();
-            Main.welcomeMusicClip.close();
-            Main.welcomeMusicClip = null;
-        }
-
         // Start pet background music
         backgroundMusicClip = Main.playLoopingSound("/welcome_music.wav");
 
