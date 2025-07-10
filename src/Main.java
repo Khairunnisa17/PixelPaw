@@ -119,14 +119,14 @@ public class Main {
             welcomeMusicClip = null;
         }
 
-        // ✅ Start welcome music
+        //Start welcome music
         welcomeMusicClip = playLoopingSound("/welcome_music.wav");
 
         JFrame frame = new JFrame("Choose Your Pet");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
-        // ⬇️ Add Menu Bar with "Back to Welcome"
+        // Add Menu Bar with "Back to Welcome"
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Menu");
         JMenuItem backItem = new JMenuItem("Back");
@@ -140,7 +140,7 @@ public class Main {
         menuBar.add(menu);
         frame.setJMenuBar(menuBar);
 
-        // ⬇️ Add pet buttons
+        // ⬇Add pet buttons
         JPanel petPanel = new JPanel(new GridLayout(1, 3, 10, 10));
         petPanel.add(createPetButton("Dog", "dog_normal.png"));
         petPanel.add(createPetButton("Cat", "cat_normal.png"));
