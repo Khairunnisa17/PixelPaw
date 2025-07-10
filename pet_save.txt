@@ -1,6 +1,6 @@
-Pet Name: 4
-Hunger: 60
-Health: 0
-Tiredness: 0
-Boredom: 0
-Cleanliness: 50
+Pet Name: kiki
+Hunger: 40
+Health: 100
+Tiredness: 15
+Boredom: 25
+Cleanliness: 55

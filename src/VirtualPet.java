@@ -120,7 +120,6 @@ public class VirtualPet extends JFrame {
         // Start pet background music
         backgroundMusicClip = Main.playLoopingSound("/welcome_music.wav");
 
-
         Timer timer = new Timer(60000, event -> updatePet());
         timer.start();
 
@@ -141,7 +140,6 @@ public class VirtualPet extends JFrame {
 
         eastPanel.add(new JScrollPane(thoughtLog), BorderLayout.CENTER);
         add(eastPanel, BorderLayout.EAST);
-
 
         updateLabels();
         setLocationRelativeTo(null);   //center the window
@@ -200,6 +198,21 @@ public class VirtualPet extends JFrame {
         thoughtLog.setCaretPosition(thoughtLog.getDocument().getLength()); // Auto-scroll
     }
 
+    //Stop all sounds
+    private void stopAllSounds() {
+        if (backgroundMusicClip != null) {
+            if (backgroundMusicClip.isRunning()) backgroundMusicClip.stop();
+            backgroundMusicClip.close();
+            backgroundMusicClip = null;
+        }
+
+        if (currentClip != null) {
+            if (currentClip.isRunning()) currentClip.stop();
+            currentClip.close();
+            currentClip = null;
+        }
+    }
+
 
     private void setupMenuBar() {
         JMenuBar menuBar = new JMenuBar();
@@ -214,6 +227,7 @@ public class VirtualPet extends JFrame {
         loadItem.addActionListener(event -> loadPet());
         renameItem.addActionListener(event -> renamePet());
         newPetItem.addActionListener(event -> {
+            stopAllSounds();       // Stop background + current sounds
             dispose();
             Main.showPetSelection();
         });
@@ -399,9 +413,11 @@ public class VirtualPet extends JFrame {
         try {
 
             // Stop and close any currently playing clip
-            if (currentClip != null && currentClip.isRunning()) {
-                currentClip.stop();
-                currentClip.close();
+            if (currentClip != null) {
+                try {
+                    currentClip.stop();
+                    currentClip.close();
+                } catch (Exception ignored) {}
                 currentClip = null;
             }
 
@@ -435,7 +451,10 @@ public class VirtualPet extends JFrame {
                     SwingUtilities.invokeLater(() -> {
                         if (currentClip == clip) {
                             setPetImage(petType + "_normal.png");
-                            currentClip.close();
+                            try {
+                                clip.close();
+                            }
+                            catch (Exception ignored) {}
                             currentClip = null;
                         }
                     });
