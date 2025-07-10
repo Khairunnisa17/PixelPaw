@@ -207,6 +207,7 @@ public class VirtualPet extends JFrame {
         loadItem.addActionListener(event -> loadPet());
         renameItem.addActionListener(event -> renamePet());
         backItem.addActionListener(event -> {
+            stopAllSounds();   //stop all sounds
             dispose();
             Main.showPetSelection();
         });
@@ -387,6 +388,22 @@ public class VirtualPet extends JFrame {
         panel.add(label);
         panel.add(bar);
     }
+
+    //stop all sounds
+    private void stopAllSounds() {
+        if (backgroundMusicClip != null) {
+            if (backgroundMusicClip.isRunning()) backgroundMusicClip.stop();
+            backgroundMusicClip.close();
+            backgroundMusicClip = null;
+        }
+
+        if (currentClip != null) {
+            if (currentClip.isRunning()) currentClip.stop();
+            currentClip.close();
+            currentClip = null;
+        }
+    }
+
 
     private void playPetSound(String soundKey) {
         try {
