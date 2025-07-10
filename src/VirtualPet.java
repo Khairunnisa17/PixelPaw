@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.util.Objects;
+import javax.swing.Timer;
 
 public class VirtualPet extends JFrame {
     private int hunger = 50, health = 100, tiredness = 30, boredom = 40, cleanliness = 70;
@@ -23,8 +24,13 @@ public class VirtualPet extends JFrame {
     private final JLabel moodLabel;
     private final JLabel petImageLabel;
     private final String petImageFile;
+    private final JLabel nameLabel;
     private String petName;
     private String petType;
+    private Clip currentClip;
+    private Clip backgroundMusicClip;
+    private JTextArea thoughtLog;
+
 
     public VirtualPet(String imageFile, String name) {
         this.petImageFile = imageFile;
@@ -43,22 +49,45 @@ public class VirtualPet extends JFrame {
         else petType = "pet";
 
         setTitle("Your Pet: " + name);
-        setSize(600, 700);
+        setSize(500, 550);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         setupMenuBar();
 
-        ImageIcon petIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/" + imageFile)));
-        petImageLabel = new JLabel(petIcon);
-        petImageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        add(petImageLabel, BorderLayout.NORTH);
+        //pet image + pet name = center
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
 
+        //position - pet image
+        ImageIcon petIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/" + imageFile)));
+        Image scaledImage = petIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        petImageLabel = new JLabel(new ImageIcon(scaledImage));
+        petImageLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // center image
+        topPanel.add(petImageLabel);
+
+        //font styles
+        Font fontName = new Font("Arial", Font.BOLD, 20);
+        Font font = new Font("Arial", Font.PLAIN, 16);
+
+        //panel - display pet's name
+        JPanel namePanel = new JPanel();
+        nameLabel = new JLabel("Name: " + petName);
+
+        nameLabel.setFont(fontName);
+        nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // center name
+        topPanel.add(Box.createVerticalStrut(5)); // spacing
+        topPanel.add(nameLabel);
+        add(topPanel, BorderLayout.NORTH);
+
+        //panel - pet status
         JPanel statusPanel = new JPanel();
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.Y_AXIS));
         statusPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        Font font = new Font("Arial", Font.PLAIN, 16);
+        //background
+        statusPanel.setBackground(new Color(255, 254, 153));
+
         hungerLabel = new JLabel();
         healthLabel = new JLabel();
         tiredLabel = new JLabel();
@@ -81,20 +110,67 @@ public class VirtualPet extends JFrame {
 
         playPetSound(petType); // Play pet sound on start
 
+        // Stop welcome music (from Main)
+        if (Main.welcomeMusicClip != null && Main.welcomeMusicClip.isRunning()) {
+            Main.welcomeMusicClip.stop();
+            Main.welcomeMusicClip.close();
+            Main.welcomeMusicClip = null;
+        }
+
+        // Start pet background music
+        backgroundMusicClip = Main.playLoopingSound("/welcome_music.wav");
+
+
         Timer timer = new Timer(60000, event -> updatePet());
         timer.start();
 
+        //Thought bubble
+        JPanel eastPanel = new JPanel();
+        eastPanel.setLayout(new BorderLayout());
+        eastPanel.setPreferredSize(new Dimension(180, 0)); // Width only
+        eastPanel.setBackground(new Color(255, 255, 240)); // Light pastel
+
+        thoughtLog = new JTextArea();
+        thoughtLog.setEditable(false);
+        thoughtLog.setLineWrap(true);
+        thoughtLog.setWrapStyleWord(true);
+        thoughtLog.setFont(new Font("Segoe UI Emoji", Font.ITALIC, 14));
+        thoughtLog.setBackground(new Color(255, 255, 240));
+        thoughtLog.setForeground(new Color(60, 60, 60));
+        thoughtLog.setBorder(BorderFactory.createTitledBorder("💭 Thoughts"));
+
+        eastPanel.add(new JScrollPane(thoughtLog), BorderLayout.CENTER);
+        add(eastPanel, BorderLayout.EAST);
+
+
         updateLabels();
+        setLocationRelativeTo(null);   //center the window
         setVisible(true);
     }
 
+    //panel - set of actions
     private JPanel getJPanel() {
         JPanel buttonPanel = new JPanel();
+        //background
+        buttonPanel.setBackground(new Color(154, 76, 0));   //bg brown
+        Color buttonBgColor = new Color(255, 224,163);  //pastel orange
+        Color borderColor = new Color(100, 60, 0);         // Border brown
+
         JButton feedBtn = new JButton("Feed 🍖");
         JButton playBtn = new JButton("Play 🎾");
         JButton napBtn = new JButton("Nap 🛏");
         JButton cleanBtn = new JButton("Clean 🛁");
 
+        // Customize all buttons consistently
+        for (JButton btn : new JButton[]{feedBtn, playBtn, napBtn, cleanBtn}) {
+            btn.setBackground(buttonBgColor);
+            btn.setForeground(Color.DARK_GRAY);
+            btn.setFocusPainted(false);
+            btn.setOpaque(true);
+            btn.setBorder(BorderFactory.createLineBorder(borderColor, 2));
+            btn.setPreferredSize(new Dimension(80, 30));
+
+        }
         feedBtn.addActionListener(event -> {
             feedPet();
             playPetSound(petType + "_eat");
@@ -109,7 +185,7 @@ public class VirtualPet extends JFrame {
         });
         cleanBtn.addActionListener(event -> {
             cleanPet();
-            playPetSound(petType + "_clean");
+            playPetSound( "clean");
         });
 
         buttonPanel.add(feedBtn);
@@ -118,6 +194,12 @@ public class VirtualPet extends JFrame {
         buttonPanel.add(cleanBtn);
         return buttonPanel;
     }
+
+    private void addThought(String message) {
+        thoughtLog.append("• " + message + "\n");
+        thoughtLog.setCaretPosition(thoughtLog.getDocument().getLength()); // Auto-scroll
+    }
+
 
     private void setupMenuBar() {
         JMenuBar menuBar = new JMenuBar();
@@ -149,6 +231,7 @@ public class VirtualPet extends JFrame {
         tiredness = Math.min(tiredness + 5, 100);
         cleanliness = Math.max(cleanliness - 10, 0);
         setPetImageTemporarily(petType + "_eating.png");
+        addThought(petName + " enjoyed a tasty treat! 🍖");
         updateLabels();
     }
 
@@ -159,6 +242,7 @@ public class VirtualPet extends JFrame {
         hunger = Math.min(hunger + 5, 100);
         cleanliness = Math.max(cleanliness - 5, 0);
         setPetImageTemporarily(petType + "_happy.png");
+        addThought(petName + " had a fun time playing! 🎾");
         updateLabels();
     }
 
@@ -166,13 +250,16 @@ public class VirtualPet extends JFrame {
         tiredness = Math.max(tiredness - 30, 0);
         boredom = Math.min(boredom + 5, 100);
         setPetImageTemporarily(petType + "_sleeping.png");
+        addThought(petName + " is taking a well-deserved nap. 😴");
         updateLabels();
     }
 
     private void cleanPet() {
         cleanliness = Math.min(cleanliness + 30, 100);
         JOptionPane.showMessageDialog(this, petName + " feels clean now!");
+        addThought(petName + " feels so much cleaner! 🛁");
         updateLabels();
+
     }
 
     private void updatePet() {
@@ -217,14 +304,31 @@ public class VirtualPet extends JFrame {
         }
     }
 
+    //Always scale new images before updating label
     private void setPetImage(String imageFileName) {
-        ImageIcon newIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/" + imageFileName)));
-        petImageLabel.setIcon(newIcon);
+        try {
+            ImageIcon rawIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/" + imageFileName)));
+            Image scaled = rawIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+            petImageLabel.setIcon(new ImageIcon(scaled));
+        }
+        catch (Exception e) {
+            System.err.println("Image not found: " + imageFileName);
+        }
     }
 
     private void setPetImageTemporarily(String imageFileName) {
         setPetImage(imageFileName);
-        new Timer(3500, event -> setPetImage(petType + "_normal.png")).start();
+
+        // Reset after sound ends or after 3.5 sec fallback
+        int delay = (currentClip != null && currentClip.getMicrosecondLength() > 0)
+                ? (int)(currentClip.getMicrosecondLength() / 1000)
+                : 3500;
+
+        //Create timer and set it
+        Timer resetTimer = new Timer(delay,event -> {setPetImage(petType + "_normal.png");
+        });
+        resetTimer.setRepeats(false);  //to prevent looping
+        resetTimer.start();
     }
 
     private void savePet() {
@@ -238,7 +342,8 @@ public class VirtualPet extends JFrame {
             writer.println("Boredom: " + boredom);
             writer.println("Cleanliness: " + cleanliness);
             JOptionPane.showMessageDialog(this, "Pet saved to pet_save.txt");
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Failed to save pet.");
         }
     }
@@ -268,7 +373,8 @@ public class VirtualPet extends JFrame {
             updateLabels();
 
             JOptionPane.showMessageDialog(this, "Pet loaded from pet_save.txt");
-        } catch (IOException | NumberFormatException | NullPointerException ex) {
+        }
+        catch (IOException | NumberFormatException | NullPointerException ex) {
             JOptionPane.showMessageDialog(this, "Failed to load pet. Make sure pet_save.txt is correctly formatted.");
         }
     }
@@ -277,6 +383,7 @@ public class VirtualPet extends JFrame {
         String newName = JOptionPane.showInputDialog(this, "Enter new pet name:");
         if (newName != null && !newName.trim().isEmpty()) {
             petName = newName.trim();
+            nameLabel.setText("Name: " + petName);  //update name under pet image
             updateLabels();
         }
     }
@@ -290,20 +397,55 @@ public class VirtualPet extends JFrame {
 
     private void playPetSound(String soundKey) {
         try {
+
+            // Stop and close any currently playing clip
+            if (currentClip != null && currentClip.isRunning()) {
+                currentClip.stop();
+                currentClip.close();
+                currentClip = null;
+            }
+
             String soundFileName = soundKey + ".wav";
             InputStream audioSrc = getClass().getResourceAsStream("/" + soundFileName);
+
             if (audioSrc == null) {
                 System.err.println("Sound file not found: " + soundFileName);
                 return;
             }
+
             BufferedInputStream bufferedIn = new BufferedInputStream(audioSrc);
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
+
             Clip clip = AudioSystem.getClip();
             clip.open(audioStream);
+            clip.setMicrosecondPosition(0);
             clip.start();
-        } catch (Exception ex) {
+
+            //update sound
+            currentClip = clip;
+
+            //action image
+            if (soundKey.contains("_eat")) setPetImage(petType + "_eating.png");
+            else if (soundKey.contains("_play")) setPetImage(petType + "_happy.png");
+            else if (soundKey.contains("_nap")) setPetImage(petType + "_sleeping.png");
+
+            //Reset image when sound finishes
+            clip.addLineListener(event -> {
+                if (event.getType() == LineEvent.Type.STOP) {
+                    SwingUtilities.invokeLater(() -> {
+                        if (currentClip == clip) {
+                            setPetImage(petType + "_normal.png");
+                            currentClip.close();
+                            currentClip = null;
+                        }
+                    });
+                }
+            });
+        }
+        catch (Exception ex) {
             ex.printStackTrace();
             System.err.println("Failed to play pet sound.");
         }
     }
+
 }

@@ -1,6 +1,6 @@
-Pet Name: 4545
-Hunger: 50
-Health: 100
-Tiredness: 30
-Boredom: 40
-Cleanliness: 70
+Pet Name: 4
+Hunger: 60
+Health: 0
+Tiredness: 0
+Boredom: 0
+Cleanliness: 50
